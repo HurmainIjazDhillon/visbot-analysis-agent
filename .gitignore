@@ -1,0 +1,41 @@
+# ─── Secrets ───────────────────────────────────────────────
+.env
+.env.local
+.env.*.local
+
+# ─── Python ────────────────────────────────────────────────
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+dist/
+build/
+*.egg-info/
+
+# ─── Next.js / Node ────────────────────────────────────────
+node_modules/
+.next/
+out/
+frontend/.next/
+frontend/node_modules/
+frontend/tsconfig.tsbuildinfo
+
+# ─── macOS ─────────────────────────────────────────────────
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# ─── IDEs ──────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ─── Logs ──────────────────────────────────────────────────
+*.log
+logs/

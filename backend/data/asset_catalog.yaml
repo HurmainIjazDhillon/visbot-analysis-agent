@@ -1,0 +1,157 @@
+# Add one entry per asset here.
+# For each asset you can define:
+# - name and aliases under lookup_names
+# - analysis instructions
+# - exact telemetry keys
+# - thresholds and nominal ranges
+# The frontend no longer selects assets manually; the backend matches these names
+# against the user's chat message and passes the matching asset instructions to the LLM.
+assets:
+  - asset_id: coldroom_1
+    name: Cold Room 1
+    asset_type: cold_room
+    description: Temperature-controlled cold room used to preserve material quality.
+    supported_analyses:
+      - consumption_analysis
+      - cooling_cycle_analysis
+      - live_status
+      - historical_variance
+      - anomaly_detection
+    metrics:
+      - temperature
+      - humidity
+      - compressor_runtime
+    source_table: openremote.asset_datapoint
+    analysis_instructions: >
+      Focus on temperature stability, compressor behavior, threshold violations,
+      cooling cycles, and any signs that the room is offline, not cooling, or drifting.
+      If the user asks about live data, prioritize freshness and device status.
+      If the user asks about history, compare lows, highs, cooling patterns, and
+      total ON time from inferred cooling cycles. For T & H Monitoring cold rooms,
+      always derive consumption analysis from temperature history for the requested window.
+    sql_notes: Temperature comes from telemetry records with recorded_at timestamps.
+    lookup_names:
+      - Cold Room 1
+      - ColdRoom1
+    temperature_keys:
+      - Temperature
+      - temperature
+    humidity_keys:
+      - Humidity
+      - humidity
+    nominal_range:
+      max_stale_hours: 2
+
+  - asset_id: filling_machine_1
+    name: Filling Machine 1
+    asset_type: filling_machine
+    description: Production line filling machine that reports per-shift and total output.
+    supported_analyses:
+      - throughput_utilization
+      - live_status
+      - historical_variance
+      - anomaly_detection
+    metrics:
+      - shift_1_count
+      - shift_2_count
+      - shift_3_count
+      - total_count
+    source_table: openremote.asset_datapoint
+    analysis_instructions: >
+      Focus on production throughput, shift performance, stale payload detection,
+      and differences between expected and actual production. If the user asks for
+      trends, compare counts by shift and identify drops or spikes.
+    sql_notes: Use recorded_at and shift counters to compare live and historical output.
+    lookup_names:
+      - Filling Machine 1
+      - Machine 1
+      - Oil Filling 1
+    production_keys:
+      - prod_shift_1_today
+      - prod_shift_2_today
+      - prod_shift_3_today
+      - prod_total_today
+    nominal_range:
+      max_stale_hours: 6
+
+  - asset_id: tank_1
+    name: Oil Tank 1
+    asset_type: tank
+    description: Storage tank that reports oil or material level over time.
+    supported_analyses:
+      - inventory_level_analysis
+      - live_status
+      - trend_analysis
+      - anomaly_detection
+    metrics:
+      - level
+      - fill_rate
+      - depletion_rate
+    source_table: openremote.asset_datapoint
+    analysis_instructions: >
+      Focus on actual physical liquid height, rate of change, abnormal drops, refill patterns, and
+      whether the tank height indicates operational risk or supply issues. The actual physical
+      liquid height is MaxFt minus TankOilLevelInFeet001, and those values may come from
+      different attributes that must be combined before analysis. Do not explain how you calculated the level in your response.
+    sql_notes: Prefer recent readings for live status and time-bucket aggregation for trends.
+    lookup_names:
+      - Oil Tank 1
+      - Tank 1
+    level_keys:
+      - TankOilLevelInFeet001
+      - Level
+    nominal_range:
+      low_level_threshold: 3
+      max_stale_hours: 1
+
+  - asset_id: aqi
+    name: AQI
+    asset_type: aqi
+    description: Air Quality Index category containing multiple child sensors.
+    supported_analyses:
+      - trend_analysis
+      - group_status
+      - live_status
+      - historical_variance
+    metrics:
+      - aqi_index
+      - pm25
+      - pm10
+      - co2
+      - voc
+    source_table: openremote.asset_datapoint
+    analysis_instructions: >
+      Focus on overall air quality index across all child sensors. Provide a proper statistical analysis of the datapoints over the requested time span (by default 3 hours if not specified) for all children. Compare readings, identify the highest contributors or locations with poorest air quality, and specify any critical warnings.
+    sql_notes: Time window default is 3 hours for AQI trends.
+    lookup_names:
+      - Air Quality
+      - Air Quality Index
+      - AQI Node
+      - AQI
+
+  - asset_id: energy_meter
+    name: Energy Meter
+    asset_type: energy_meter
+    description: Energy meter category containing multiple child meters for tracking power consumption.
+    supported_analyses:
+      - trend_analysis
+      - group_status
+      - live_status
+      - historical_variance
+      - consumption_analysis
+    metrics:
+      - voltage
+      - current
+      - power
+      - energy
+      - power_factor
+    source_table: openremote.asset_datapoint
+    analysis_instructions: >
+      Focus on overall power and energy consumption across all child energy meters. Provide a proper statistical analysis of the datapoints over the requested time span (by default 3 hours if not specified) for all children. Break down consumption hierarchically to identify peak usage, highest contributing child meters, power factor anomalies, and any critical warnings regarding voltage or current imbalances.
+    sql_notes: Time window default is 3 hours for Energy Meter trends. Must include hierarchy and group by child assets to compare consumption.
+    lookup_names:
+      - Energy Meter
+      - Energy Meters
+      - Power Meter
+      - Power Meters
+      - Electricity Meter

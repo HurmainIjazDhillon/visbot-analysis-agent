@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{{ title }}</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        color: #1f2937;
+        margin: 24px;
+      }
+      .wrap {
+        max-width: 960px;
+        margin: 0 auto;
+      }
+      .meta {
+        color: #6b7280;
+        margin-bottom: 20px;
+      }
+      .card {
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 16px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      th, td {
+        border: 1px solid #e5e7eb;
+        padding: 8px;
+        text-align: left;
+      }
+      th {
+        background: #f9fafb;
+      }
+      code {
+        background: #f3f4f6;
+        padding: 2px 4px;
+        border-radius: 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h1>{{ title }}</h1>
+      <p class="meta">{{ subtitle }}</p>
+      <div class="card">
+        <h2>Summary</h2>
+        <p>{{ summary }}</p>
+      </div>
+      <div class="card">
+        <h2>Analysis Notes</h2>
+        <p>{{ details }}</p>
+      </div>
+      <div class="card">
+        <h2>SQL Used</h2>
+        <p><code>{{ sql_query }}</code></p>
+      </div>
+      <div class="card">
+        <h2>Sample Data</h2>
+        <table>
+          <thead>
+            <tr>
+              {% for column in columns %}
+              <th>{{ column }}</th>
+              {% endfor %}
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in rows %}
+            <tr>
+              {% for column in columns %}
+              <td>{{ row.get(column, "") }}</td>
+              {% endfor %}
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </body>
+</html>
